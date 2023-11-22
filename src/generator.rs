@@ -11,11 +11,12 @@ use typst_cli::compile;
 
 use super::errors::Error;
 use super::templates;
+use super::themes::{self, Theme};
 
 pub struct Generator {
-    typst_source: String,
-    resume: Resume,
-    theme_file: PathBuf,
+    pub typst_source: String,
+    pub resume: Resume,
+    pub theme: Theme,
 }
 
 #[derive(Clone, Parser)]
@@ -23,9 +24,10 @@ pub struct GeneratorParams {
     #[arg(short, long)]
     typst_source: Option<PathBuf>,
 
-    data_file: PathBuf,
+    #[arg(short, long)]
+    theme_file: Option<PathBuf>,
 
-    theme_file: PathBuf,
+    data_file: PathBuf,
 }
 
 impl TryFrom<&GeneratorParams> for Generator {
@@ -48,6 +50,12 @@ impl TryFrom<&GeneratorParams> for Generator {
             templates::DEFAULT.to_string()
         };
 
+        let theme = if let Some(pb) = &params.theme_file {
+            Theme::try_from(pb)?
+        } else {
+            serde_yaml::from_str(themes::DEFAULT)?
+        };
+
         let mut data_file = File::open(&params.data_file)?;
         let mut yaml = String::new();
         data_file.read_to_string(&mut yaml)?;
@@ -56,7 +64,7 @@ impl TryFrom<&GeneratorParams> for Generator {
         Ok(Self {
             typst_source,
             resume,
-            theme_file: params.theme_file.clone(),
+            theme,
         })
     }
 }
@@ -64,18 +72,20 @@ impl TryFrom<&GeneratorParams> for Generator {
 impl Generator {
     pub fn generate(&self) -> Result<(), Error> {
         let tmp_dir = TempDir::new("resume-generator")?;
+
         let typst_source_path = tmp_dir.path().join("rendered-resume.typ");
+        let mut typst_file = File::create(&typst_source_path)?;
+        typst_file.write_all(self.typst_source.as_bytes())?;
 
-        let mut tmp_file = File::create(&typst_source_path)?;
-        tmp_file.write_all(self.typst_source.as_bytes())?;
-
+        let theme_str = serde_yaml::to_string(&self.theme)?;
         let theme_path = tmp_dir.path().join("theme.yaml");
-        copy(&self.theme_file, theme_path)?;
+        let mut theme_file = File::create(&theme_path)?;
+        theme_file.write_all(theme_str.as_bytes())?;
 
-        let resume_str = serde_yaml::to_string(&self.resume)?;
+        let data_str = serde_yaml::to_string(&self.resume)?;
         let data_path = tmp_dir.path().join("data.yaml");
         let mut data_file = File::create(&data_path)?;
-        data_file.write_all(resume_str.as_bytes())?;
+        data_file.write_all(data_str.as_bytes())?;
 
         let mut cmd = CompileCommand::default();
         cmd.common.input = typst_source_path;

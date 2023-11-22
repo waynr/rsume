@@ -1,0 +1,8 @@
+#font: "Nimbus Mono PS"
+#font: "New Computer Modern Math"
+#font: "New Computer Modern Math"
+background: "#ffffff"
+foreground: "#000000"
+h1: "#000000"
+h2: "#000000"
+links: "#000000"

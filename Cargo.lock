@@ -1918,6 +1918,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "json-resume",
+ "serde",
  "serde_yaml",
  "tempdir",
  "thiserror",

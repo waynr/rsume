@@ -3,6 +3,7 @@ use clap::Parser;
 mod errors;
 mod generator;
 mod templates;
+mod themes;
 
 use errors::Error;
 use generator::GeneratorParams;
