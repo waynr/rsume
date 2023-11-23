@@ -27,7 +27,7 @@
 )
 
 #let website(item) = {
-  link(item.url)[#item.text]
+  link(item.url)[#item.network]
 }
 
 #let h1(body) = {
@@ -120,10 +120,10 @@
   )
 }
 
-#let title(item) = {
+#let position(item) = {
   (
     cell(inset: 0pt)[
-      #text(weight: "medium", item.name)
+      #text(weight: "medium", item.title)
     ],
     rcell[
       #item.startdate - #item.enddate
@@ -131,15 +131,15 @@
   )
 }
 
-#let titles(items) = {
+#let positions(items) = {
   grid(
     columns: (1fr, 1fr),
     rows: (auto),
-    ..items.map(title).flatten(),
+    ..items.map(position).flatten(),
   )
 }
 
-#let experience(item) = {
+#let work(item) = {
   grid(
     columns: 1,
     rows: (auto),
@@ -150,7 +150,7 @@
         columns: (1fr, 2fr),
         rows: (auto),
         cell(inset: 0pt)[
-          #h2(item.company)
+          #h2(item.name)
         ],
         cell(inset: 0pt)[
           #if item.keys().contains("url") {
@@ -160,22 +160,28 @@
       )
     ],
     cell(inset: 8pt)[
-      // titles
-      #titles(item.titles)
+      #if item.at("positions", default: ()).len() > 0 {
+        // positions
+        positions(item.positions)
+      } else {
+        cell(inset: 0pt)[
+          #text(weight: "medium", item.position)
+        ]
+      }
     ],
-    if item.at("projects", default: "").len() > 0 {
+    if item.at("highlights", default: "").len() > 0 {
       cell(inset: 0pt)[
         // projects
-        #indentedlist(item.projects, indent: 13pt)
+        #indentedlist(item.highlights, indent: 13pt)
       ]
     },
   )
 }
 
-#let experiences(items) = {
+#let works(items) = {
   h1("Experience")
   for i in items {
-    experience(i)
+    work(i)
   }
 }
 
@@ -195,11 +201,11 @@
     rows: (5pt, auto),
     [],
     [
-      #h2(item.school)
+      #h2(item.institution)
     ],
     h2(
     [
-      #item.startdate - #item.enddate
+      #item.startDate - #item.endDate
     ]),
     [],
     rect(
@@ -215,7 +221,7 @@
       ],
     ),
     [
-      GPA: #item.gpa
+      GPA: #item.score
     ],
   )
 }
@@ -291,14 +297,14 @@
   fill: theme.background,
   header: [
     #set align(center)
-    #data.basic.websites.map(website).join(" - ")
+    #data.basics.profiles.map(website).join(" - ")
     #v(5pt)
   ],
 )
 
-#page_title(data.basic.name)
+#page_title(data.basics.name)
 
-#if data.summary.len() > 0 {
+#if data.at("summary", default: "").len() > 0 {
   summary(data.summary)
 }
 
@@ -306,8 +312,8 @@
   projects(data.projects)
 }
 
-#if data.experience.len() > 0 {
-  experiences(data.experience)
+#if data.work.len() > 0 {
+  works(data.work)
 }
 
 #if data.education.len() > 0 {
