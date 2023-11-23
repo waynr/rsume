@@ -1206,8 +1206,6 @@ dependencies = [
 [[package]]
 name = "json-resume"
 version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5cb414332857fe662b64799d79af4c6cbb9181a5e64e0f897c3d943039199f66"
 dependencies = [
  "regex",
  "serde",
@@ -1919,6 +1917,7 @@ dependencies = [
  "clap",
  "json-resume",
  "serde",
+ "serde_json",
  "serde_yaml",
  "tempdir",
  "thiserror",
