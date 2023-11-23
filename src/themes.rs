@@ -19,6 +19,14 @@ pub struct Theme {
     links: String,
 }
 
+impl TryFrom<&str> for Theme {
+    type Error = Error;
+
+    fn try_from(s: &str) -> Result<Self, Error> {
+        Ok(serde_yaml::from_str(s)?)
+    }
+}
+
 impl TryFrom<&PathBuf> for Theme {
     type Error = Error;
 
