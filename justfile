@@ -6,6 +6,19 @@ build-refactor:
   reset
   (cargo lbuild --color=always 2>&1) | less -R
 
+test:
+  cargo test
+
+test-refactor:
+  # requires cargo-limit to be installed
+  reset
+  (cargo ltest --color=always 2>&1) | less -R
+
+test-template:
+  ./target/debug/resume-generator \
+    -t templates/general-purpose.typ \
+    testdata/sample.resume.yaml
+
 watchexec target:
   watchexec \
     -c \
@@ -22,3 +35,12 @@ we-build-refactor:
 
 we-build:
   just watchexec build
+
+we-test-refactor:
+  just watchexec test-refactor
+
+we-test:
+  just watchexec test
+
+we-test-template:
+  just watchexec test-template
