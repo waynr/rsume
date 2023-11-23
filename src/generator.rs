@@ -59,10 +59,7 @@ impl TryFrom<&GeneratorParams> for Generator {
             serde_yaml::from_str(themes::DEFAULT)?
         };
 
-        let mut data_file = File::open(&params.data_file)?;
-        let mut yaml = String::new();
-        data_file.read_to_string(&mut yaml)?;
-        let resume: Resume = serde_yaml::from_str(yaml.as_str())?;
+        let resume: Resume = Resume::try_from(&params.data_file)?;
 
         Ok(Self {
             typst_source,
