@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{Read, Write};
+use std::io::Read;
 use std::path::PathBuf;
 
 use serde::Deserialize;
@@ -11,7 +11,7 @@ pub const DEFAULT: &'static str = include_str!("../themes/default.yaml");
 
 #[derive(Serialize, Deserialize)]
 pub struct Theme {
-    font: String,
+    font: Option<String>,
     background: String,
     foreground: String,
     h1: String,
