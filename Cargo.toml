@@ -8,7 +8,8 @@ edition = "2021"
 [dependencies]
 
 clap = { version = "4.4", features = ["derive", "env"] }
-json-resume = "0.2"
+#json-resume = "0.2"
+json-resume = { path = "/home/wayne/projects/json-resume" }
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
 tempdir = "0.3"

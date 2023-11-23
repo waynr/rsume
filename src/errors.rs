@@ -8,5 +8,8 @@ pub enum Error {
     SerdeYamlError(#[from] serde_yaml::Error),
 
     #[error("{0}")]
+    SerdeJsonError(#[from] serde_json::Error),
+
+    #[error("{0}")]
     TypstEcoStringError(typst_library::prelude::EcoString),
 }

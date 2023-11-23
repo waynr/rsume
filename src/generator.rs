@@ -14,6 +14,20 @@ use super::errors::Error;
 use super::templates;
 use super::themes::{self, Theme};
 
+#[derive(Serialize, Deserialize)]
+pub struct Resume {
+    #[serde(flatten)]
+    json_resume: JsonResume
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Summary {
+    description: Option<String>,
+    industry_experience: Option<String>,
+    education: Option<String>,
+    interests: Vec<String>,
+}
+
 pub struct Generator {
     pub typst_source: String,
     pub resume: Resume,
