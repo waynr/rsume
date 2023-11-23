@@ -1,10 +1,11 @@
-use std::fs::copy;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::PathBuf;
 
+use serde::Serialize;
+use serde::Deserialize;
 use clap::Parser;
-use json_resume::Resume;
+use json_resume::Resume as JsonResume;
 use tempdir::TempDir;
 use typst_cli::args::CompileCommand;
 use typst_cli::compile;
@@ -17,6 +18,8 @@ pub struct Generator {
     pub typst_source: String,
     pub resume: Resume,
     pub theme: Theme,
+
+    pub output_file: Option<PathBuf>,
 }
 
 #[derive(Clone, Parser)]
@@ -24,10 +27,12 @@ pub struct GeneratorParams {
     #[arg(short, long)]
     typst_source: Option<PathBuf>,
 
-    #[arg(short, long)]
+    #[arg(long)]
     theme_file: Option<PathBuf>,
 
     data_file: PathBuf,
+
+    output_file: Option<PathBuf>,
 }
 
 impl TryFrom<&GeneratorParams> for Generator {
@@ -65,6 +70,7 @@ impl TryFrom<&GeneratorParams> for Generator {
             typst_source,
             resume,
             theme,
+            output_file: params.output_file.clone(),
         })
     }
 }
@@ -89,7 +95,7 @@ impl Generator {
 
         let mut cmd = CompileCommand::default();
         cmd.common.input = typst_source_path;
-        cmd.output = Some(PathBuf::from("./resume.pdf"));
+        cmd.output = self.output_file.clone();
 
         compile::compile(cmd).map_err(Error::TypstEcoStringError)?;
         Ok(())
