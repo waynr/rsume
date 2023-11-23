@@ -9,7 +9,7 @@ use serde::Serialize;
 
 use super::errors::Error;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Summary {
     description: Option<String>,
     industry_experience: Option<String>,
@@ -19,6 +19,10 @@ pub struct Summary {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Resume {
+    /// Extension to json_resume schema for alternative summary style.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    summary: Option<Summary>,
+
     #[serde(flatten)]
     json_resume: JsonResume,
 }
