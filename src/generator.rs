@@ -39,14 +39,14 @@ pub struct Generator {
 #[derive(Clone, Parser)]
 pub struct GeneratorParams {
     #[arg(short, long)]
-    typst_source: Option<PathBuf>,
+    pub typst_source: Option<PathBuf>,
 
     #[arg(long)]
-    theme_file: Option<PathBuf>,
+    pub theme_file: Option<PathBuf>,
 
-    data_file: PathBuf,
+    pub data_file: PathBuf,
 
-    output_file: Option<PathBuf>,
+    pub output_file: Option<PathBuf>,
 }
 
 impl TryFrom<&GeneratorParams> for Generator {
@@ -112,6 +112,27 @@ impl Generator {
         cmd.output = self.output_file.clone();
 
         compile::compile(cmd).map_err(Error::TypstEcoStringError)?;
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::path::PathBuf;
+    use std::str::FromStr;
+
+    use super::*;
+
+    #[test]
+    fn test_try_from_params() -> Result<(), Error> {
+        let params = GeneratorParams {
+            typst_source: Some(PathBuf::from_str("./templates/general-purpose.typ").unwrap()),
+            theme_file: Some(PathBuf::from_str("./themes/default.yaml").unwrap()),
+            data_file: PathBuf::from_str("./testdata/sample.resume.yaml").unwrap(),
+            output_file: None,
+        };
+        let g = Generator::try_from(&params)?;
+        g.generate()?;
         Ok(())
     }
 }
