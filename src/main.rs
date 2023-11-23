@@ -2,6 +2,7 @@ use clap::Parser;
 
 mod errors;
 mod generator;
+mod resume;
 mod templates;
 mod themes;
 

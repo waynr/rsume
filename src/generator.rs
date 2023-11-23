@@ -2,31 +2,15 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::PathBuf;
 
-use serde::Serialize;
-use serde::Deserialize;
 use clap::Parser;
-use json_resume::Resume as JsonResume;
 use tempdir::TempDir;
 use typst_cli::args::CompileCommand;
 use typst_cli::compile;
 
 use super::errors::Error;
+use super::resume::Resume;
 use super::templates;
 use super::themes::{self, Theme};
-
-#[derive(Serialize, Deserialize)]
-pub struct Resume {
-    #[serde(flatten)]
-    json_resume: JsonResume
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Summary {
-    description: Option<String>,
-    industry_experience: Option<String>,
-    education: Option<String>,
-    interests: Vec<String>,
-}
 
 pub struct Generator {
     pub typst_source: String,
