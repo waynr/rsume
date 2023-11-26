@@ -21,10 +21,10 @@ pub struct Summary {
 pub struct Resume {
     /// Extension to json_resume schema for alternative summary style.
     #[serde(skip_serializing_if = "Option::is_none")]
-    summary: Option<Summary>,
+    pub(crate) summary: Option<Summary>,
 
     #[serde(flatten)]
-    json_resume: JsonResume,
+    pub(crate) json_resume: JsonResume,
 }
 
 enum SupportedExtensions {

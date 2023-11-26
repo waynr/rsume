@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 use tempdir::TempDir;
+use tera::{Context, Tera};
 use typst_cli::args::CompileCommand;
 use typst_cli::compile;
 
@@ -74,9 +75,29 @@ impl Generator {
     pub fn generate(&self) -> Result<(), Error> {
         let tmp_dir = TempDir::new("resume-generator")?;
 
+        let skill_keywords = self
+            .resume
+            .json_resume
+            .skills
+            .iter()
+            .map(|skill| skill.keywords.iter())
+            .flatten()
+            .map(|k| k.0.clone())
+            .collect::<Vec<String>>();
+        let mut ctx = Context::new();
+        ctx.insert("keywords", &skill_keywords);
+
+        let mut tera = Tera::default();
+        tera.add_raw_template(
+            "template",
+            &self.typst_source,
+        )?;
+        let typst_source = tera.render("template", &ctx)?;
+        tracing::debug!("{typst_source}");
+
         let typst_source_path = tmp_dir.path().join("rendered-resume.typ");
         let mut typst_file = File::create(&typst_source_path)?;
-        typst_file.write_all(self.typst_source.as_bytes())?;
+        typst_file.write_all(typst_source.as_bytes())?;
 
         let theme_str = serde_yaml::to_string(&self.theme)?;
         let theme_path = tmp_dir.path().join("theme.yaml");

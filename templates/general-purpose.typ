@@ -1,3 +1,11 @@
+{% for keyword in keywords -%}
+#show regex("([[:punct:][:space:]]{{keyword}}[[:^word:]]|[[:punct:][:space:]]{{keyword}}$|[[:^word:]]{{keyword}}[[:punct:][:space:]]|^{{keyword}}[[:punct:][:space:]]|^{{keyword}}$)"): it => {
+  show "{{keyword}}": set text(weight: "black", fill: rgb("#39cccc"))
+  [#it]
+}
+
+{% endfor %}
+
 #let page_title(body) = {
   set align(center)
   set text(
@@ -126,7 +134,7 @@
       #text(weight: "medium", item.title)
     ],
     rcell[
-      #item.startdate - #item.enddate
+      #item.startDate - #item.endDate
     ],
   )
 }
