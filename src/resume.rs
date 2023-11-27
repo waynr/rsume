@@ -17,7 +17,7 @@ pub struct Summary {
     interests: Vec<String>,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Resume {
     /// Extension to json_resume schema for alternative summary style.
     #[serde(skip_serializing_if = "Option::is_none")]

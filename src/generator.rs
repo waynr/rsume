@@ -62,19 +62,13 @@ impl TryFrom<&GeneratorParams> for Generator {
             serde_yaml::from_str(themes::DEFAULT)?
         };
 
-        let resume: Resume = if params.data_file.len() > 1 {
-            let base = Resume::try_from(&params.data_file[0])?;
-            params
-                .data_file
-                .iter()
-                .skip(1)
-                .try_fold(base, |acc, data_path| -> Result<Resume> {
-                    let overrides = Resume::try_from(data_path)?;
-                    Ok(merge(&acc, &overrides)?)
-                })?
-        } else {
-            Resume::try_from(&params.data_file[0])?
-        };
+        let resume = params.data_file.iter().try_fold(
+            Resume::default(),
+            |acc, data_path| -> Result<Resume> {
+                let overrides = Resume::try_from(data_path)?;
+                Ok(merge(&acc, &overrides)?)
+            },
+        )?;
 
         Ok(Self {
             typst_source,
