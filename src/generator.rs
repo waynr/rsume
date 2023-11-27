@@ -102,10 +102,7 @@ impl Generator {
         ctx.insert("keywords", &skill_keywords);
 
         let mut tera = Tera::default();
-        tera.add_raw_template(
-            "template",
-            &self.typst_source,
-        )?;
+        tera.add_raw_template("template", &self.typst_source)?;
         let typst_source = tera.render("template", &ctx)?;
         tracing::debug!("{typst_source}");
 
