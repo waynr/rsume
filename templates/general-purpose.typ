@@ -1,9 +1,5 @@
 {% for keyword in keywords -%}
-#show regex("([[:punct:][:space:]]{{keyword}}[[:^word:]]|[[:punct:][:space:]]{{keyword}}$|[[:^word:]]{{keyword}}[[:punct:][:space:]]|^{{keyword}}[[:punct:][:space:]]|^{{keyword}}$)"): it => {
-  show "{{keyword}}": set text(weight: "black", fill: rgb("#39cccc"))
-  [#it]
-}
-
+#show regex("(?i)\\b{{keyword}}\\b"): set text(weight: "black", fill: rgb("#39cccc"))
 {% endfor %}
 
 #let page_title(body) = {
