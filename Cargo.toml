@@ -11,6 +11,7 @@ authors = ["Wayne Warren wayne.warren.s@gmail.com"]
 clap = { version = "4.4", features = ["derive", "env"] }
 #json-resume = "0.2"
 json-resume = { path = "/home/wayne/projects/json-resume" }
+merge-struct = "0.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
 serde_json = "1.0"

@@ -3,12 +3,13 @@ use std::io::{Read, Write};
 use std::path::PathBuf;
 
 use clap::Parser;
+use merge_struct::merge;
 use tempdir::TempDir;
 use tera::{Context, Tera};
 use typst_cli::args::CompileCommand;
 use typst_cli::compile;
 
-use super::errors::Error;
+use super::errors::{Error, Result};
 use super::resume::Resume;
 use super::templates;
 use super::themes::{self, Theme};
@@ -29,19 +30,20 @@ pub struct GeneratorParams {
     #[arg(long)]
     pub theme_file: Option<PathBuf>,
 
-    pub data_file: PathBuf,
-
+    #[arg(short, long)]
     pub output_file: Option<PathBuf>,
+
+    pub data_file: Vec<PathBuf>,
 }
 
 impl TryFrom<&GeneratorParams> for Generator {
     type Error = Error;
 
-    fn try_from(params: &GeneratorParams) -> Result<Self, Error> {
+    fn try_from(params: &GeneratorParams) -> Result<Self> {
         let typst_source = if let Some(s) = params
             .typst_source
             .as_ref()
-            .map(|pb| -> Result<String, Error> {
+            .map(|pb| -> Result<String> {
                 let mut f = File::open(&pb)?;
                 let mut s = String::new();
                 f.read_to_string(&mut s)?;
@@ -60,7 +62,19 @@ impl TryFrom<&GeneratorParams> for Generator {
             serde_yaml::from_str(themes::DEFAULT)?
         };
 
-        let resume: Resume = Resume::try_from(&params.data_file)?;
+        let resume: Resume = if params.data_file.len() > 1 {
+            let base = Resume::try_from(&params.data_file[0])?;
+            params
+                .data_file
+                .iter()
+                .skip(1)
+                .try_fold(base, |acc, data_path| -> Result<Resume> {
+                    let overrides = Resume::try_from(data_path)?;
+                    Ok(merge(&acc, &overrides)?)
+                })?
+        } else {
+            Resume::try_from(&params.data_file[0])?
+        };
 
         Ok(Self {
             typst_source,
@@ -72,7 +86,7 @@ impl TryFrom<&GeneratorParams> for Generator {
 }
 
 impl Generator {
-    pub fn generate(&self) -> Result<(), Error> {
+    pub fn generate(&self) -> Result<()> {
         let tmp_dir = TempDir::new("resume-generator")?;
 
         let skill_keywords = self
@@ -126,7 +140,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_try_from_params() -> Result<(), Error> {
+    fn test_try_from_params() -> Result<()> {
         let params = GeneratorParams {
             typst_source: Some(PathBuf::from_str("./templates/general-purpose.typ").unwrap()),
             theme_file: Some(PathBuf::from_str("./themes/default.yaml").unwrap()),

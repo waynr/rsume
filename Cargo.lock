@@ -1507,6 +1507,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "merge-struct"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d82012d21e24135b839b6b9bebd622b7ff0cb40071498bc2d066d3a6d04dd4a"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "miniz_oxide"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2168,24 +2178,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "resume-generator"
-version = "0.1.0"
-dependencies = [
- "clap",
- "json-resume",
- "serde",
- "serde_json",
- "serde_yaml",
- "tempdir",
- "tera",
- "thiserror",
- "tracing",
- "tracing-subscriber",
- "typst-cli",
- "typst-library",
-]
-
-[[package]]
 name = "resvg"
 version = "0.36.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2266,6 +2258,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "862340e351ce1b271a378ec53f304a5558f7db87f3769dc655a8f6ecbb68b302"
 dependencies = [
  "xmlparser",
+]
+
+[[package]]
+name = "rsume"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "json-resume",
+ "merge-struct",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "tempdir",
+ "tera",
+ "thiserror",
+ "tracing",
+ "tracing-subscriber",
+ "typst-cli",
+ "typst-library",
 ]
 
 [[package]]
