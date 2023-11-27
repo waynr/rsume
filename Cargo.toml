@@ -10,7 +10,7 @@ authors = ["Wayne Warren wayne.warren.s@gmail.com"]
 
 clap = { version = "4.4", features = ["derive", "env"] }
 #json-resume = "0.2"
-json-resume = { path = "/home/wayne/projects/json-resume" }
+json-resume = { path = "./forks/json-resume" }
 merge-struct = "0.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
@@ -21,5 +21,5 @@ thiserror = "1.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 #typst_cli = { git = "https://github.com/typst/typst/crates/typst-cli" }
-typst-cli = { path = "/home/wayne/projects/typst/crates/typst-cli" }
-typst-library = { path = "/home/wayne/projects/typst/crates/typst-library" }
+typst-cli = { path = "./forks/typst/crates/typst-cli" }
+typst-library = { path = "./forks/typst/crates/typst-library" }

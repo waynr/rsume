@@ -1,0 +1,8 @@
+[submodule "forks/typst"]
+	path = forks/typst
+	url = https://github.com/waynr/typst
+	branch = typst-cli_enable-embedding
+[submodule "forks/json-resume"]
+	path = forks/json-resume
+	url = https://github.com/waynr/json-resume
+	branch = support-rsume-use-case
